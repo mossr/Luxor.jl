@@ -17,26 +17,113 @@ strokepath()
 for i in -0.5:0.1:1.5
     randomhue()
     circle(between(p1, p2, i), 5, :fill)
-end</code></pre><p><img src="../../assets/figures/betweenpoint.png" alt="arc"/></p><p>Values less than 0.0 and greater than 1.0 appear to work well too, placing the point on the line if extended.</p><p><a href="../../reference/api/#Luxor.center3pts-Tuple{Point, Point, Point}"><code>center3pts</code></a> finds the radius and center point of a circle passing through three points which you can then use with functions such as <a href="../../reference/api/#Luxor.circle-Tuple{Point, Point, Point}"><code>circle</code></a> or <a href="../../reference/api/#Luxor.arc2r-Tuple{Point, Point, Point}"><code>arc2r</code></a>.</p><p><a href="../../reference/api/#Luxor.getnearestpointonline-Tuple{Point, Point, Point}"><code>getnearestpointonline</code></a> finds perpendiculars, as does <a href="../../reference/api/#Luxor.perpendicular-Tuple{Point, Point, Any}"><code>perpendicular</code></a>.</p><pre><code class="language-julia hljs">pt1, pt2 = Point(-150, 0), Point(150, 50)
-line(pt1, pt2, :stroke)
+end</code></pre><p><img src="../../assets/figures/betweenpoint.png" alt="arc"/></p><p>Values less than 0.0 and greater than 1.0 appear to work well too, placing the point on the line if extended.</p><p><a href="../../reference/api/#Luxor.center3pts-Tuple{Point, Point, Point}"><code>center3pts</code></a> finds the radius and center point of a circle passing through three points which you can then use with functions such as <a href="../../reference/api/#Luxor.circle-Tuple{Point, Point, Point}"><code>circle</code></a> or <a href="../../reference/api/#Luxor.arc2r-Tuple{Point, Point, Point}"><code>arc2r</code></a>.</p><p><a href="../../reference/api/#Luxor.perpendicular-Tuple{Point, Point, Any}"><code>perpendicular</code></a> finds the foot of a perpendicular line which lies on a line through two points perpendicular to a another point.</p><pre><code class="language-julia hljs">A, B = Point(-150, 0), Point(150, 50)
 
-pt3 = Point(-50, -80)
-circle.([pt1, pt2, pt3], 3, :fill)
+sethue(&quot;grey50&quot;)
+fontsize(18)
+setline(4)
 
-p = getnearestpointonline(pt1, pt2, pt3)
+line(A, B, :stroke)
+
+# point perpendicular to line
+C = Point(-50, -80)
+D = perpendicular(A, B, C)
+
+# line perpendicular to line
+E, F = perpendicular(A, B)
+
+# point perpendicular to extended line
+G = Point(230, -200)
+H = perpendicular(A, B, G)
+
+sethue(&quot;grey50&quot;)
+label.(string.([&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;G&quot;, &quot;H&quot;]),
+    :ne, offset=10,
+    (A, B, C, D, E, F, G, H))
+
 sethue(&quot;red&quot;)
-arrow(pt3, p)
-circle(pt3, 4, :fill)
-
-pt4, pt5 = perpendicular(pt1, pt2)
-setline(3)
-
-sethue(&quot;black&quot;)
-label.(string.([&quot;p&quot;, &quot;pt1&quot;, &quot;pt2&quot;, &quot;pt3&quot;, &quot;pt4&quot;, &quot;pt5&quot;]), :ne, (p, pt1, pt2, pt3, pt4, pt5))
-
+arrow(C, D)
 sethue(&quot;green&quot;)
-arrow(pt4, pt5)
-circle.([pt4, pt5], 4, :fill)</code></pre><p><img src="../../assets/figures/perpendicular.svg" alt="arc"/></p><h2 id="Points-and-arcs"><a class="docs-heading-anchor" href="#Points-and-arcs">Points and arcs</a><a id="Points-and-arcs-1"></a><a class="docs-heading-anchor-permalink" href="#Points-and-arcs" title="Permalink"></a></h2><p>Use <code>isarcclockwise(c, p1, p2)</code> to check whether an arc centered at <code>c</code> running from <code>p1</code> to <code>p2</code> is clockwise.</p><p>The <a href="../../reference/api/#Luxor.pointinverse-Tuple{Point, Any, Any}"><code>pointinverse</code></a> function finds the inverse of a point relative to a reference circle (centerpoint and radius). In the following example, each vertex on the shape inside the circle is linked by an arrow to its inverse outside the circle.</p><pre><code class="language-julia hljs">d = @drawsvg begin
+arrow(E, F)
+sethue(&quot;orange&quot;)
+arrow(G, H)
+sethue(&quot;purple&quot;)
+circle.([A, B, C, D, E, F, G, H], 4, :fill)</code></pre><img src='data:image/svg+xml;utf-8,<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600pt" height="600pt" viewBox="0 0 600 600" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 0.578125 0 L 0.578125 -12.910156 L 10.828125 -12.910156 L 10.828125 0 Z M 9.210938 -1.617188 L 9.210938 -11.292969 L 2.195312 -11.292969 L 2.195312 -1.617188 Z M 9.210938 -1.617188 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 8 -5.289062 L 6.039062 -10.996094 L 3.953125 -5.289062 Z M 5.125 -12.910156 L 7.101562 -12.910156 L 11.785156 0 L 9.871094 0 L 8.5625 -3.867188 L 3.453125 -3.867188 L 2.054688 0 L 0.265625 0 Z M 5.125 -12.910156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-2">
+<path style="stroke:none;" d="M 6.222656 -7.453125 C 6.960938 -7.453125 7.535156 -7.554688 7.945312 -7.761719 C 8.589844 -8.082031 8.914062 -8.664062 8.914062 -9.5 C 8.914062 -10.34375 8.570312 -10.914062 7.882812 -11.207031 C 7.496094 -11.371094 6.921875 -11.453125 6.160156 -11.453125 L 3.039062 -11.453125 L 3.039062 -7.453125 Z M 6.8125 -1.492188 C 7.882812 -1.492188 8.648438 -1.804688 9.105469 -2.425781 C 9.390625 -2.820312 9.535156 -3.292969 9.535156 -3.851562 C 9.535156 -4.789062 9.117188 -5.425781 8.28125 -5.765625 C 7.835938 -5.945312 7.246094 -6.039062 6.511719 -6.039062 L 3.039062 -6.039062 L 3.039062 -1.492188 Z M 1.328125 -12.910156 L 6.875 -12.910156 C 8.386719 -12.910156 9.460938 -12.460938 10.097656 -11.558594 C 10.472656 -11.023438 10.660156 -10.410156 10.660156 -9.710938 C 10.660156 -8.898438 10.429688 -8.230469 9.96875 -7.707031 C 9.726562 -7.433594 9.382812 -7.179688 8.929688 -6.953125 C 9.59375 -6.699219 10.085938 -6.414062 10.414062 -6.101562 C 10.996094 -5.539062 11.285156 -4.761719 11.285156 -3.769531 C 11.285156 -2.9375 11.023438 -2.1875 10.503906 -1.511719 C 9.722656 -0.503906 8.484375 0 6.785156 0 L 1.328125 0 Z M 1.328125 -12.910156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-3">
+<path style="stroke:none;" d="M 6.8125 -13.261719 C 8.445312 -13.261719 9.714844 -12.832031 10.617188 -11.96875 C 11.519531 -11.109375 12.019531 -10.132812 12.121094 -9.035156 L 10.414062 -9.035156 C 10.222656 -9.867188 9.835938 -10.527344 9.257812 -11.011719 C 8.679688 -11.5 7.871094 -11.742188 6.828125 -11.742188 C 5.558594 -11.742188 4.53125 -11.296875 3.75 -10.402344 C 2.96875 -9.507812 2.574219 -8.140625 2.574219 -6.292969 C 2.574219 -4.78125 2.929688 -3.554688 3.632812 -2.613281 C 4.339844 -1.671875 5.394531 -1.203125 6.792969 -1.203125 C 8.082031 -1.203125 9.0625 -1.699219 9.738281 -2.6875 C 10.09375 -3.210938 10.363281 -3.898438 10.539062 -4.746094 L 12.242188 -4.746094 C 12.089844 -3.386719 11.585938 -2.246094 10.730469 -1.328125 C 9.707031 -0.21875 8.324219 0.335938 6.582031 0.335938 C 5.082031 0.335938 3.824219 -0.121094 2.804688 -1.027344 C 1.460938 -2.230469 0.789062 -4.085938 0.789062 -6.59375 C 0.789062 -8.496094 1.296875 -10.058594 2.304688 -11.277344 C 3.394531 -12.601562 4.894531 -13.261719 6.8125 -13.261719 Z M 6.8125 -13.261719 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-4">
+<path style="stroke:none;" d="M 6.328125 -1.492188 C 6.921875 -1.492188 7.40625 -1.554688 7.789062 -1.679688 C 8.46875 -1.90625 9.023438 -2.347656 9.457031 -2.996094 C 9.804688 -3.519531 10.050781 -4.1875 10.203125 -5 C 10.292969 -5.488281 10.335938 -5.9375 10.335938 -6.355469 C 10.335938 -7.953125 10.019531 -9.195312 9.382812 -10.082031 C 8.746094 -10.964844 7.722656 -11.40625 6.3125 -11.40625 L 3.207031 -11.40625 L 3.207031 -1.492188 Z M 1.449219 -12.910156 L 6.679688 -12.910156 C 8.453125 -12.910156 9.832031 -12.28125 10.8125 -11.023438 C 11.683594 -9.886719 12.121094 -8.429688 12.121094 -6.652344 C 12.121094 -5.28125 11.863281 -4.042969 11.347656 -2.9375 C 10.4375 -0.980469 8.875 0 6.664062 0 L 1.449219 0 Z M 1.449219 -12.910156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-5">
+<path style="stroke:none;" d="M 1.539062 -12.910156 L 10.953125 -12.910156 L 10.953125 -11.328125 L 3.242188 -11.328125 L 3.242188 -7.410156 L 10.371094 -7.410156 L 10.371094 -5.914062 L 3.242188 -5.914062 L 3.242188 -1.539062 L 11.082031 -1.539062 L 11.082031 0 L 1.539062 0 Z M 1.539062 -12.910156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-6">
+<path style="stroke:none;" d="M 1.539062 -12.910156 L 10.492188 -12.910156 L 10.492188 -11.328125 L 3.289062 -11.328125 L 3.289062 -7.410156 L 9.625 -7.410156 L 9.625 -5.871094 L 3.289062 -5.871094 L 3.289062 0 L 1.539062 0 Z M 1.539062 -12.910156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-7">
+<path style="stroke:none;" d="M 6.953125 -13.246094 C 8.164062 -13.246094 9.214844 -13.011719 10.097656 -12.542969 C 11.382812 -11.867188 12.167969 -10.6875 12.453125 -9 L 10.722656 -9 C 10.511719 -9.945312 10.074219 -10.628906 9.414062 -11.0625 C 8.75 -11.492188 7.914062 -11.707031 6.90625 -11.707031 C 5.710938 -11.707031 4.707031 -11.257812 3.890625 -10.363281 C 3.070312 -9.464844 2.664062 -8.128906 2.664062 -6.355469 C 2.664062 -4.820312 3 -3.570312 3.671875 -2.605469 C 4.347656 -1.640625 5.445312 -1.160156 6.96875 -1.160156 C 8.136719 -1.160156 9.101562 -1.5 9.867188 -2.175781 C 10.632812 -2.851562 11.023438 -3.945312 11.039062 -5.457031 L 6.996094 -5.457031 L 6.996094 -6.90625 L 12.664062 -6.90625 L 12.664062 0 L 11.539062 0 L 11.117188 -1.660156 C 10.527344 -1.011719 10 -0.558594 9.546875 -0.308594 C 8.777344 0.125 7.800781 0.34375 6.617188 0.34375 C 5.089844 0.34375 3.773438 -0.152344 2.671875 -1.140625 C 1.46875 -2.382812 0.871094 -4.089844 0.871094 -6.257812 C 0.871094 -8.421875 1.457031 -10.140625 2.628906 -11.417969 C 3.742188 -12.636719 5.183594 -13.246094 6.953125 -13.246094 Z M 6.953125 -13.246094 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-8">
+<path style="stroke:none;" d="M 1.414062 -12.910156 L 3.179688 -12.910156 L 3.179688 -7.578125 L 9.898438 -7.578125 L 9.898438 -12.910156 L 11.664062 -12.910156 L 11.664062 0 L 9.898438 0 L 9.898438 -6.039062 L 3.179688 -6.039062 L 3.179688 0 L 1.414062 0 Z M 1.414062 -12.910156 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface583">
+<path style="fill:none;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(49.803922%25,49.803922%25,49.803922%25);stroke-opacity:1;stroke-miterlimit:10;" d="M 150 300 L 450 350 "/>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-1" x="157.071068" y="292.928932"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-2" x="457.071068" y="342.928932"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-3" x="257.071068" y="212.594948"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-4" x="241.395392" y="306.982986"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-5" x="282.071068" y="467.928932"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-6" x="332.071068" y="167.928932"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-7" x="537.071068" y="92.586159"/>
+</g>
+<g style="fill:rgb(49.803922%25,49.803922%25,49.803922%25);fill-opacity:1;">
+  <use xlink:href="%23glyph0-8" x="494.368365" y="349.145148"/>
+</g>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%25,0%25,0%25);stroke-opacity:1;stroke-miterlimit:10;" d="M 250 220 L 235.84375 304.941406 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%25,0%25,0%25);fill-opacity:1;" d="M 239.617188 305.570312 L 234.324219 314.054688 L 232.070312 304.3125 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%25,50.196078%25,0%25);stroke-opacity:1;stroke-miterlimit:10;" d="M 275 475 L 323.480469 184.113281 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(0%25,50.196078%25,0%25);fill-opacity:1;" d="M 319.707031 183.484375 L 325 175 L 327.257812 184.742188 "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%25,64.705882%25,0%25);stroke-opacity:1;stroke-miterlimit:10;" d="M 530 100 L 488.816406 347.101562 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%25,64.705882%25,0%25);fill-opacity:1;" d="M 492.589844 347.730469 L 487.296875 356.214844 L 485.042969 346.472656 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 154 300 C 154 305.332031 146 305.332031 146 300 C 146 294.667969 154 294.667969 154 300 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 454 350 C 454 355.332031 446 355.332031 446 350 C 446 344.667969 454 344.667969 454 350 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 254 220 C 254 225.332031 246 225.332031 246 220 C 246 214.667969 254 214.667969 254 220 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 238.324219 314.054688 C 238.324219 319.386719 230.324219 319.386719 230.324219 314.054688 C 230.324219 308.722656 238.324219 308.722656 238.324219 314.054688 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 279 475 C 279 480.332031 271 480.332031 271 475 C 271 469.667969 279 469.667969 279 475 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 329 175 C 329 180.332031 321 180.332031 321 175 C 321 169.667969 329 169.667969 329 175 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 534 100 C 534 105.332031 526 105.332031 526 100 C 526 94.667969 534 94.667969 534 100 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(50.196078%25,0%25,50.196078%25);fill-opacity:1;" d="M 491.296875 356.214844 C 491.296875 361.550781 483.296875 361.550781 483.296875 356.214844 C 483.296875 350.882812 491.296875 350.882812 491.296875 356.214844 "/>
+</g>
+</svg>
+'/><h2 id="Points-and-arcs"><a class="docs-heading-anchor" href="#Points-and-arcs">Points and arcs</a><a id="Points-and-arcs-1"></a><a class="docs-heading-anchor-permalink" href="#Points-and-arcs" title="Permalink"></a></h2><p>Use <code>isarcclockwise(c, p1, p2)</code> to check whether an arc centered at <code>c</code> running from <code>p1</code> to <code>p2</code> is clockwise.</p><p>The <a href="../../reference/api/#Luxor.pointinverse-Tuple{Point, Any, Any}"><code>pointinverse</code></a> function finds the inverse of a point relative to a reference circle (centerpoint and radius). In the following example, each vertex on the shape inside the circle is linked by an arrow to its inverse outside the circle.</p><pre><code class="language-julia hljs">d = @drawsvg begin
 radius = 60
 circle(O, radius + 20, :stroke)
 
@@ -8872,4 +8959,4 @@ for (pos, n) in tiles
         persistence=pers)
     setgray(ns)
     box(pos, tiles.tilewidth, tiles.tileheight, :fillstroke)
-end</code></pre><p><img src="../../assets/figures/noise.png" alt="noise"/></p><p>Use <a href="../../reference/api/#Luxor.initnoise-Tuple{Any}"><code>initnoise</code></a> to initialize the noise behaviour.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../simplegraphics/">« Draw simple shapes</a><a class="docs-footer-nextpage" href="../tables-grids/">Work with tables and grids »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.15 on <span class="colophon-date" title="Wednesday 23 March 2022 09:43">Wednesday 23 March 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+end</code></pre><p><img src="../../assets/figures/noise.png" alt="noise"/></p><p>Use <a href="../../reference/api/#Luxor.initnoise-Tuple{Any}"><code>initnoise</code></a> to initialize the noise behaviour.</p></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../simplegraphics/">« Draw simple shapes</a><a class="docs-footer-nextpage" href="../tables-grids/">Work with tables and grids »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.15 on <span class="colophon-date" title="Tuesday 5 April 2022 08:47">Tuesday 5 April 2022</span>. Using Julia version 1.7.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
