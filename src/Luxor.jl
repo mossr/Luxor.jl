@@ -10,7 +10,7 @@ end
 """
 module Luxor
 
-using Juno, Cairo, Colors, FileIO, Base64, Dates, Rsvg, FFMPEG
+using Juno, Cairo, Colors, FileIO, Base64, Dates, Rsvg, FFMPEG, Random
 
 using Requires
 

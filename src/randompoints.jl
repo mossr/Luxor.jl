@@ -1,8 +1,9 @@
-function randomordinate(low, high)
+randomordinate(low, high) = randomordinate(Random.GLOBAL_RNG, low, high)
+function randomordinate(rng::Random.AbstractRNG, low, high)
     if low > high
       low, high = high, low
     end
-    return low + rand() * abs(high - low)
+    return low + rand(rng) * abs(high - low)
 end
 
 """
@@ -10,8 +11,9 @@ end
 
 Return a random point somewhere inside the rectangle defined by the two points.
 """
-function randompoint(lowpt::Point, highpt::Point)
-  Point(randomordinate(lowpt.x, highpt.x), randomordinate(lowpt.y, highpt.y))
+randompoint(lowpt::Point, highpt::Point) = randompoint(Random.GLOBAL_RNG, lowpt, highpt)
+function randompoint(rng::AbstractRNG, lowpt::Point, highpt::Point)
+  Point(randomordinate(rng, lowpt.x, highpt.x), randomordinate(rng, lowpt.y, highpt.y))
 end
 
 """
@@ -19,8 +21,9 @@ end
 
 Return a random point somewhere inside a rectangle defined by the four values.
 """
-function randompoint(lowx, lowy, highx, highy)
-    Point(randomordinate(lowx, highx), randomordinate(lowy, highy))
+randompoint(lowx, lowy, highx, highy) = randompoint(Random.GLOBAL_RNG, lowx, lowy, highx, highy)
+function randompoint(rng::Random.AbstractRNG, lowx, lowy, highx, highy)
+    Point(randomordinate(rng, lowx, highx), randomordinate(rng, lowy, highy))
 end
 
 """
@@ -28,10 +31,11 @@ end
 
 Return an array of `n` random points somewhere inside the rectangle defined by two points.
 """
-function randompointarray(lowpt::Point, highpt::Point, n)
+randompointarray(lowpt::Point, highpt::Point, n) = randompointarray(Random.GLOBAL_RNG, lowpt, highpt, n)
+function randompointarray(rng::Random.AbstractRNG, lowpt::Point, highpt::Point, n)
   array = Point[]
   for i in 1:n
-    push!(array, randompoint(lowpt, highpt))
+    push!(array, randompoint(rng, lowpt, highpt))
   end
   array
 end
@@ -42,10 +46,11 @@ end
 Return an array of `n` random points somewhere inside the rectangle defined by the four
 coordinates.
 """
-function randompointarray(lowx, lowy, highx, highy, n)
+randompointarray(lowx, lowy, highx, highy, n) = randompointarray(Random.GLOBAL_RNG, lowx, lowy, highx, highy, n)
+function randompointarray(rng::Random.AbstractRNG, lowx, lowy, highx, highy, n)
     array = Point[]
     for i in 1:n
-        push!(array, randompoint(lowx, lowy, highx, highy))
+        push!(array, randompoint(rng, lowx, lowy, highx, highy))
     end
     array
 end
@@ -111,7 +116,8 @@ for pt in randompointarray(BoundingBox(), 20)
 end
 ```
 """
-function randompointarray(w, h, d;
+randompointarray(w, h, d; kwargs...) = randompointarray(Random.AbstractRNG, w, h, d; kwargs...)
+function randompointarray(rng::Random.AbstractRNG, w, h, d;
         attempts=20)
     cellsize = d/sqrt(2)
     grid = zeros(Int,
@@ -122,13 +128,13 @@ function randompointarray(w, h, d;
     # start with point in middle
     push!(activepoints, Point(w/2, h/2))
     while !isempty(activepoints)
-        random_index = rand(1:length(activepoints))
+        random_index = rand(rng, 1:length(activepoints))
         sample_center = activepoints[random_index]
         sample_added = false
         for i in 1:attempts
-            angle = rand() * 2π
+            angle = rand(rng) * 2π
             dir = (sin(angle), cos(angle))
-            sample = sample_center + dir .* (d + rand() * d)
+            sample = sample_center + dir .* (d + rand(rng) * d)
             if _empty_neighbourhood(sample, w, h, cellsize, d, points, grid)
                 push!(points, sample)
                 push!(activepoints, sample)
@@ -150,8 +156,9 @@ end
 Return an array of randomly positioned points inside the
 bounding box `d` units apart.
 """
-function randompointarray(bbox::BoundingBox, d; kwargs...)
+randompointarray(bbox::BoundingBox, d; kwargs...) = randompointarray(Random.GLOBAL_RNG, bbox, d; kwargs...)
+function randompointarray(rng::Random.AbstractRNG, bbox::BoundingBox, d; kwargs...)
     bw = boxwidth(bbox)
     bh = boxheight(bbox)
-    return randompointarray(bw, bh, d; kwargs...) .- (Point(bw/2, bh/2))
+    return randompointarray(rng, bw, bh, d; kwargs...) .- (Point(bw/2, bh/2))
 end
